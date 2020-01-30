@@ -23,7 +23,7 @@ die() {
 }
 
 has() {
-    command -v "${1}" 2>/dev/null
+    command -v "${1}" 1>/dev/null
 }
 
 # Clone Github gitignore repo to local machine.
