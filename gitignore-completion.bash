@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 
-set -eu
-
 # ------------------------------------------------------------------------------
 # Defaults
 # ------------------------------------------------------------------------------
@@ -18,7 +16,10 @@ SUBCOMMANDS="-h --help --clone --pull"
 list() {
     find "${GITIGNORE_DIR}" -iname "*.gitignore" \
         | sed 's/\.gitignore$//g' \
-        | sed "s#^${GITIGNORE_DIR}/##g"
+        | sed "s#^${GITIGNORE_DIR}/##g" \
+        | tr '\r\n' ' '
 }
 
-complete -W "${SUBCOMMANDS} $( list )" gitignore
+LIST="$(list)"
+
+complete -W "${SUBCOMMANDS} ${LIST}" gitignore
