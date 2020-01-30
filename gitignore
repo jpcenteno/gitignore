@@ -1,0 +1,94 @@
+#! /bin/sh
+
+# gitignore: Append templates to .gitignore\n
+# usage: gitignore <template>
+
+set -eu
+
+# ------------------------------------------------------------------------------
+# Defaults
+# ------------------------------------------------------------------------------
+
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+GITIGNORE_DIR="${GITIGNORE_DIR:-${XDG_DATA_HOME}/gitignore}"
+GITIGNORE_REPO="${GITIGNORE_REPO:-https://github.com/github/gitignore.git}"
+
+# ------------------------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------------------------
+
+die() {
+    printf "%s\n" "$*" 1>&2
+    exit 1
+}
+
+has() {
+    command -v "${1}" 2>/dev/null
+}
+
+# Clone Github gitignore repo to local machine.
+clone() {
+    mkdir -p "${GITIGNORE_DIR}" \
+        && git clone "${GITIGNORE_REPO}" "${GITIGNORE_DIR}"
+}
+
+pull() {
+    git -C "${GITIGNORE_DIR}" pull --rebase
+}
+
+# Append at the end of $PWD/.gitignore
+append() {
+    fullpath="${GITIGNORE_DIR}/${1}.gitignore"
+    [ -f "${fullpath}" ] || die "${fullpath} not found!"
+    cat "${fullpath}" >> .gitignore
+}
+
+# ------------------------------------------------------------------------------
+# Command line arg parsing
+# ------------------------------------------------------------------------------
+
+has "cat" || die "cat(1) not found."
+has "git" || die "git(1) not found."
+
+usage() {
+    printf "gitignore: Append templates to .gitignore\n"
+    printf "usage:\n"
+    printf "    gitignore <template>\n"
+    printf "    gitignore --clone # Clone Github .gitignore repo and exit\n"
+    printf "    gitignore --update # pull changes from .gitignore repo.\n"
+}
+
+# Ensure <template> (argument 1) was specified
+set +u
+[ -n "${1}" ] || {
+    printf "No template given:\n\n"
+    usage
+    exit 1
+}
+set -u
+
+case "${1}" in
+
+    -h|--help)
+        usage
+        exit 0
+        ;;
+
+    --clone)
+        clone
+        exit 0
+        ;;
+
+    --pull)
+        [ -d "${GITIGNORE_DIR}" ] || clone
+        pull
+        exit 0
+        ;;
+
+    *)
+        [ -d "${GITIGNORE_DIR}" ] || clone
+        append "${1}"
+        exit 0
+        ;;
+
+esac
