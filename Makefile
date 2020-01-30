@@ -1,6 +1,9 @@
 DESTDIR = /usr/local
 COMPLETIONDIR = /etc/bash_completion.d/
 
+# Default location to clone the Github Gitignore repo.
+DEFAULT_REPO_DIR = $(HOME)/.local/share/gitignore
+
 all:
 	# Nothing to do here.
 
@@ -32,3 +35,9 @@ install: gitignore gitignore-completion.bash
 	chmod 755 ${DESTDIR}/bin/gitignore
 	mkdir -p ${COMPLETIONDIR}
 	cp -f gitignore-completion.bash ${COMPLETIONDIR}/
+
+uninstall:
+	rm -rf \
+		${DESTDIR}/bin/gitignore \
+		${COMPLETIONDIR}/gitignore-completion.bash \
+		$(DEFAULT_REPO_DIR)

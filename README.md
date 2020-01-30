@@ -34,3 +34,9 @@ For bash completion, add this to `.bash_profile` or `.bashrc`:
 ```
 source "/etc/bash_completion.d/gitignore-completion.bash"
 ```
+
+### Uninstall
+
+```
+sudo make uninstall
+```
