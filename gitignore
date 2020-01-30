@@ -43,6 +43,14 @@ append() {
     cat "${fullpath}" >> .gitignore
 }
 
+# List available templates
+list() {
+    find "${GITIGNORE_DIR}" -iname "*.gitignore" \
+        | sed 's/\.gitignore$//g' \
+        | sed "s#^${GITIGNORE_DIR}/##g" \
+        | tr '\r\n' ' '
+}
+
 # ------------------------------------------------------------------------------
 # Command line arg parsing
 # ------------------------------------------------------------------------------
@@ -55,7 +63,8 @@ usage() {
     printf "usage:\n"
     printf "    gitignore <template>\n"
     printf "    gitignore --clone # Clone Github .gitignore repo and exit\n"
-    printf "    gitignore --update # pull changes from .gitignore repo.\n"
+    printf "    gitignore --update # pull changes from .gitignore repo\n"
+    printf "    gitignore --list # List available gitignore files\n"
 }
 
 # Ensure <template> (argument 1) was specified
@@ -82,6 +91,13 @@ case "${1}" in
     --pull)
         [ -d "${GITIGNORE_DIR}" ] || clone
         pull
+        exit 0
+        ;;
+
+    --list)
+        [ -d "/Users/j/.local/share/gitignore" ] \
+            || die "/Users/j/.local/share/gitignore not found."
+        list
         exit 0
         ;;
 

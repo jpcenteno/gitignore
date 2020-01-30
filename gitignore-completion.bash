@@ -7,7 +7,7 @@
 XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
 GITIGNORE_DIR="${GITIGNORE_DIR:-${XDG_DATA_HOME}/gitignore}"
 
-SUBCOMMANDS="-h --help --clone --pull"
+SUBCOMMANDS="-h --help --clone --pull --list"
 
 # ------------------------------------------------------------------------------
 # Functions
